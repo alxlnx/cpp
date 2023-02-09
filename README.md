@@ -1,4 +1,2 @@
-# algos-problems
-Algorithms and problems encountered during CS classes.
-Solved problems:
-- Longest Common Subsequence algo
+# cpp
+New code and problems encountered during CS classes.
