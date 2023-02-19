@@ -46,7 +46,7 @@ int main() {
   auto prime_idx = std::find_if(v.begin(), v.end(),
                    [](auto x) 
                    {
-                     for (auto i{2}; i < x - 1; ++i) {
+                     for (auto i{2}; i*i <= x; ++i) {
                        if (x % i == 0) return false;
                      }
                    return true;
