@@ -23,7 +23,7 @@ public:
 	Timer(T& os) : start{steady_clock::now()}, os{os} {}
 	
 	~Timer() {
-		os << std::chrono::duration_cast< std::chrono::nanoseconds  >(steady_clock::now() - start).count() << std::endl;
+		os << std::chrono::duration_cast< std::chrono::microseconds  >(steady_clock::now() - start).count() << std::endl;
 	}
 	
 private:
@@ -68,22 +68,26 @@ int main() {
 	std::vector<long long> nums;
 	std::random_device rd;
 	std::mt19937 gen(rd());
-	std::uniform_int_distribution<long long> d(-10'000, 10'000);
+	std::uniform_int_distribution<long long> d(1, 10'000);
 	std::generate_n(std::back_inserter(nums), 10'000'000,
 			[&gen, &d](){return d(gen);});
 	
+
 	for (auto i = 0; i < 100; ++i) {
 		std::ostringstream ss{};
-		const std::string opt_level = "O3";
-		ss << "homework_5_data_" << i+1 << "_" << opt_level << "_NANO.txt";
+		const std::string opt_level = "O0";
+		ss << "homework_5_data_" << i+1 << "_" << opt_level << ".txt";
 		std::ofstream ofs{ss.str()};
 
 		constexpr auto K = 3;
+		auto result = 0ull;
 		for (auto num_threads = 1ull; num_threads <= std::thread::hardware_concurrency() * K; ++num_threads) {
 			// apparently writing to std::cout A LOT slower than writing to a file via std::ofstream
 			Timer t(ofs);
-			parallel_accumulate(std::begin(nums), std::end(nums), 0ull, num_threads);
+			// std::cout << parallel_accumulate(std::begin(nums), std::end(nums), 0ull, num_threads) << '\n';
+			result = parallel_accumulate(std::begin(nums), std::end(nums), 0ull, num_threads);
 			ofs << nums.size() << '\t' <<  num_threads << '\t';
 		}
+		std::cout << result << '\n';
 	}
 }
